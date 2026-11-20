@@ -34,3 +34,31 @@ export const createEventSchema = Joi.object({
         )
         .default("general"),
 });
+
+export const updateEventSchema = Joi.object({
+    name: Joi.string().min(3),
+
+    date: Joi.date()
+        .iso()
+        .greater("now"),
+
+    capacity: Joi.number()
+        .integer()
+        .min(5),
+
+    registrationCount: Joi.number()
+        .integer()
+        .min(0),
+
+    status: Joi.string()
+        .valid("active", "cancelled", "completed"),
+
+    category: Joi.string()
+        .valid(
+            "conference",
+            "workshop",
+            "meetup",
+            "seminar",
+            "general"
+        ),
+}).min(1);
