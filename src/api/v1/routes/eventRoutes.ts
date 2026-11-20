@@ -1,11 +1,11 @@
-import express from "express";
+import express, { Router } from "express";
 import * as eventController from "../controllers/eventController";
 import {
     validateCreateEvent,
     validateUpdateEvent,
 } from "../middleware/validateEvent";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Get all events
 router.get("/", eventController.getAllEvents);

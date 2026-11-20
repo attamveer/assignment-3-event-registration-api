@@ -11,7 +11,7 @@ export const runTransaction = async <T>(
     try {
         return await db.runTransaction(operations);
     } catch (error: unknown) {
-        const errorMessage =
+        const errorMessage: string =
             error instanceof Error ? error.message : "Unknown error";
         throw new Error(`Transaction failed: ${errorMessage}`);
     }
@@ -40,7 +40,7 @@ export const createDocument = async <T>(
 
         return docRef.id;
     } catch (error: unknown) {
-        const errorMessage =
+        const errorMessage: string =
             error instanceof Error ? error.message : "Unknown error";
         throw new Error(
             `Failed to create document in ${collectionName}: ${errorMessage}`
@@ -59,7 +59,7 @@ export const getDocuments = async (
     try {
         return await db.collection(collectionName).get();
     } catch (error: unknown) {
-        const errorMessage =
+        const errorMessage: string =
             error instanceof Error ? error.message : "Unknown error";
         throw new Error(
             `Failed to fetch documents from ${collectionName}: ${errorMessage}`
@@ -84,7 +84,7 @@ export const getDocumentById = async (
             .get();
         return doc?.exists ? doc : null;
     } catch (error: unknown) {
-        const errorMessage =
+        const errorMessage: string =
             error instanceof Error ? error.message : "Unknown error";
         throw new Error(
             `Failed to fetch document ${id} from ${collectionName}: ${errorMessage}`
@@ -107,7 +107,7 @@ export const updateDocument = async <T>(
     try {
         await db.collection(collectionName).doc(id).update(data);
     } catch (error: unknown) {
-        const errorMessage =
+        const errorMessage: string =
             error instanceof Error ? error.message : "Unknown error";
         throw new Error(
             `Failed to update document ${id} in ${collectionName}: ${errorMessage}`
@@ -138,7 +138,7 @@ export const deleteDocument = async (
             await docRef.delete();
         }
     } catch (error: unknown) {
-        const errorMessage =
+        const errorMessage: string =
             error instanceof Error ? error.message : "Unknown error";
         throw new Error(
             `Failed to delete document ${id} from ${collectionName}: ${errorMessage}`

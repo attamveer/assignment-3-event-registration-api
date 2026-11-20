@@ -1,6 +1,10 @@
 import * as eventService from "../src/api/v1/services/eventService";
 import * as firestoreRepository from "../src/api/v1/repositories/firestoreRepository";
-import { Event } from "../src/api/v1/models/eventModel";
+
+import {
+    Event,
+    CreateEventInput,
+} from "../src/api/v1/models/eventModel";
 
 // Mock repository operations
 jest.mock("../src/api/v1/repositories/firestoreRepository");
@@ -18,9 +22,12 @@ describe("Event Service", () => {
         updatedAt: "2026-11-19T10:00:00.000Z",
     };
 
-    const mockDocument = {
+    const mockDocument: {
+        id: string;
+        data: () => Omit<Event, "id">;
+    } = {
         id: "event-1",
-        data: () => eventData,
+        data: (): Omit<Event, "id"> => eventData,
     };
 
     beforeEach(() => {
@@ -35,7 +42,7 @@ describe("Event Service", () => {
             });
 
         // Act
-        const result = await eventService.getAllEvents();
+        const result: Event[] = await eventService.getAllEvents();
 
         // Assert
         expect(firestoreRepository.getDocuments)
@@ -51,7 +58,8 @@ describe("Event Service", () => {
             .mockResolvedValue(mockDocument);
 
         // Act
-        const result = await eventService.getEventById("event-1");
+        const result: Event | null =
+            await eventService.getEventById("event-1");
 
         // Assert
         expect(firestoreRepository.getDocumentById)
@@ -65,14 +73,14 @@ describe("Event Service", () => {
         (firestoreRepository.createDocument as jest.Mock)
             .mockResolvedValue("event-1");
 
-        const input = {
+        const input: CreateEventInput = {
             name: "Developer Conference",
             date: "2027-07-15T09:00:00.000Z",
             capacity: 100,
         };
 
         // Act
-        const result = await eventService.createEvent(input);
+        const result: Event = await eventService.createEvent(input);
 
         // Assert
         expect(firestoreRepository.createDocument)
@@ -97,7 +105,7 @@ describe("Event Service", () => {
             .mockResolvedValue(undefined);
 
         // Act
-        const result = await eventService.updateEvent(
+        const result: Event | null = await eventService.updateEvent(
             "event-1",
             { capacity: 150 }
         );
@@ -124,7 +132,8 @@ describe("Event Service", () => {
             .mockResolvedValue(undefined);
 
         // Act
-        const result = await eventService.deleteEvent("event-1");
+        const result: boolean =
+            await eventService.deleteEvent("event-1");
 
         // Assert
         expect(firestoreRepository.deleteDocument)

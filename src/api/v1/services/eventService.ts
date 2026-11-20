@@ -1,28 +1,32 @@
 import { Event, CreateEventInput } from "../models/eventModel";
 import * as firestoreRepository from "../repositories/firestoreRepository";
 
-const EVENTS_COLLECTION = "events";
+const EVENTS_COLLECTION: string = "events";
 
 // Get all events
 export const getAllEvents = async (): Promise<Event[]> => {
-    const snapshot = await firestoreRepository.getDocuments(
-        EVENTS_COLLECTION
-    );
+    const snapshot: FirebaseFirestore.QuerySnapshot =
+        await firestoreRepository.getDocuments(
+            EVENTS_COLLECTION
+        );
 
-    return snapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-    } as Event));
+    return snapshot.docs.map(
+        (doc: FirebaseFirestore.QueryDocumentSnapshot): Event => ({
+            ...doc.data(),
+            id: doc.id,
+        } as Event)
+    );
 };
 
 // Get event by ID
 export const getEventById = async (
     id: string
 ): Promise<Event | null> => {
-    const document = await firestoreRepository.getDocumentById(
-        EVENTS_COLLECTION,
-        id
-    );
+    const document: FirebaseFirestore.DocumentSnapshot | null =
+        await firestoreRepository.getDocumentById(
+            EVENTS_COLLECTION,
+            id
+        );
 
     if (!document) {
         return null;
@@ -38,7 +42,7 @@ export const getEventById = async (
 export const createEvent = async (
     input: CreateEventInput
 ): Promise<Event> => {
-    const now = new Date().toISOString();
+    const now: string = new Date().toISOString();
 
     const eventData: Omit<Event, "id"> = {
         name: input.name,
@@ -51,10 +55,11 @@ export const createEvent = async (
         updatedAt: now,
     };
 
-    const id = await firestoreRepository.createDocument<Event>(
-        EVENTS_COLLECTION,
-        eventData
-    );
+    const id: string =
+        await firestoreRepository.createDocument<Event>(
+            EVENTS_COLLECTION,
+            eventData
+        );
 
     return {
         id,
@@ -67,14 +72,17 @@ export const updateEvent = async (
     id: string,
     updates: Partial<CreateEventInput>
 ): Promise<Event | null> => {
-    const existingEvent = await getEventById(id);
+    const existingEvent: Event | null =
+        await getEventById(id);
 
     if (!existingEvent) {
         return null;
     }
 
-    const capacity = updates.capacity ?? existingEvent.capacity;
-    const registrationCount =
+    const capacity: number =
+        updates.capacity ?? existingEvent.capacity;
+
+    const registrationCount: number =
         updates.registrationCount ?? existingEvent.registrationCount;
 
     if (registrationCount > capacity) {
@@ -104,7 +112,8 @@ export const updateEvent = async (
 export const deleteEvent = async (
     id: string
 ): Promise<boolean> => {
-    const existingEvent = await getEventById(id);
+    const existingEvent: Event | null =
+        await getEventById(id);
 
     if (!existingEvent) {
         return false;

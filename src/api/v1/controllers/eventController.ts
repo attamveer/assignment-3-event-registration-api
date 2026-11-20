@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import * as eventService from "../services/eventService";
 import { HTTP_STATUS } from "../../../constants/httpConstants";
-import { CreateEventInput } from "../models/eventModel";
+import { Event, CreateEventInput } from "../models/eventModel";
 
 // Get all events
 export const getAllEvents = async (
@@ -10,7 +10,7 @@ export const getAllEvents = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const events = await eventService.getAllEvents();
+        const events: Event[] = await eventService.getAllEvents();
 
         res.status(HTTP_STATUS.OK).json({
             message: "Events retrieved",
@@ -29,7 +29,8 @@ export const getEventById = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const event = await eventService.getEventById(req.params.id);
+        const event: Event | null =
+            await eventService.getEventById(req.params.id);
 
         if (!event) {
             res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -54,7 +55,7 @@ export const createEvent = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const event = await eventService.createEvent(
+        const event: Event = await eventService.createEvent(
             req.body as CreateEventInput
         );
 
@@ -69,12 +70,12 @@ export const createEvent = async (
 
 // Update event
 export const updateEvent = async (
-    req: Request<{ id: string}>,
+    req: Request<{ id: string }>,
     res: Response,
     next: NextFunction
 ): Promise<void> => {
     try {
-        const event = await eventService.updateEvent(
+        const event: Event | null = await eventService.updateEvent(
             req.params.id,
             req.body
         );
@@ -109,7 +110,8 @@ export const deleteEvent = async (
     next: NextFunction
 ): Promise<void> => {
     try {
-        const deleted = await eventService.deleteEvent(req.params.id);
+        const deleted: boolean =
+            await eventService.deleteEvent(req.params.id);
 
         if (!deleted) {
             res.status(HTTP_STATUS.NOT_FOUND).json({
